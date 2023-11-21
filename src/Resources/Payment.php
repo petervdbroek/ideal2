@@ -2,6 +2,9 @@
 
 namespace PetervdBroek\iDEAL2\Resources;
 
+use DateTime;
+use Exception;
+
 class Payment extends Base
 {
     public const SUCCESS = 'SettlementCompleted';
@@ -96,5 +99,14 @@ class Payment extends Base
     public function isError(): bool
     {
         return $this->getPaymentStatus() === self::ERROR;
+    }
+
+    /**
+     * @return DateTime
+     * @throws Exception
+     */
+    public function getExpiryDateTime(): DateTime
+    {
+        return new DateTime($this->response['CommonPaymentData']['ExpiryDateTimestamp']);
     }
 }
