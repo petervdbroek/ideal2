@@ -15,8 +15,27 @@ composer require petervdbroek/ideal2
 ```
 
 ## Status
-This package is currently under development. There will be more installation instructions. 
+This package is currently under development. <br />
 The only supported bank is <strong>Rabobank</strong>. More banks can be added in the future.
+
+## Documentation
+
+### Initiate library
+```php
+$ideal = new RabobankiDEAL('<merchantId>', '<certificatePath>', '<privateKeyPath>', '<env:test|prod>');
+```
+
+### Initiate a payment
+```php
+$payment = $ideal->createPayment(<amount>, '<reference>', '<notificationUrl>', '<returnUrl>');
+```
+This will return a [Payment][] object containing a Payment ID.
+
+### Get payment status
+```php
+$paymentStatus = $ideal->getPaymentStatus(<paymentId>);
+```
+This will return a [Payment][] object containing the status.
 
 ## Copyright and License
 
@@ -26,3 +45,4 @@ information.
 
 [composer]: http://getcomposer.org/
 [license]: https://github.com/petervdbroek/ideal2/blob/main/LICENSE
+[payment]: https://github.com/petervdbroek/ideal2/blob/main/src/Resources/Payment.php
