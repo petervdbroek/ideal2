@@ -23,7 +23,7 @@ class Payment extends Base
      */
     public function getRedirectUrl(): string
     {
-        return $this->response['Links']['RedirectUrl'];
+        return $this->response['Links']['RedirectUrl']['Href'];
     }
 
     /**
