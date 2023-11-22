@@ -15,14 +15,16 @@ composer require petervdbroek/ideal2
 ```
 
 ## Status
-This package is currently under development. <br />
-The only supported bank is <strong>Rabobank</strong>. More banks can be added in the future.
+This package is a minimal viable product for doing **standard** payments with iDEAL 2.0 using the Open Banking APIs.\
+There is an open TODO in the [Signer][] class to add verification of Signature and Digest in Responses and on notifications. This will be added later.\
+This package currently does not support Fast Checkout or Profile recognition via Debtor Tokens.\
+If you need this functionality you can add this by creating a PR on this repo. See the [Contribute](#a-namecontributeacontribute) section.
 
 ## Documentation
 
 ### Initiate library
 ```php
-$ideal = new RabobankiDEAL('<merchantId>', '<certificatePath>', '<privateKeyPath>', '<env:test|prod>');
+$ideal = new iDEAL('<merchantId>', '<client>', '<baseUri>', '<certificatePath>', '<privateKeyPath>');
 ```
 
 ### Initiate a payment
@@ -35,7 +37,11 @@ This will return a [Payment][] object containing a Payment ID.
 ```php
 $paymentStatus = $ideal->getPaymentStatus(<paymentId>);
 ```
-This will return a [Payment][] object containing the status.
+This will return a [PaymentStatus][] object containing the status.
+
+## <a name="contribute"></a>Contribute
+If you need more functionality you can create a PR on this repo.\
+You can extend the [Resources][] by adding new getters, and extend or add [Endpoints][] to add more functionality like Fast Checkout or Profile recognition via Debtor Tokens.
 
 ## Copyright and License
 
@@ -45,4 +51,8 @@ information.
 
 [composer]: http://getcomposer.org/
 [license]: https://github.com/petervdbroek/ideal2/blob/main/LICENSE
+[signer]: https://github.com/petervdbroek/ideal2/blob/main/src/Utils/Signer.php#L114
 [payment]: https://github.com/petervdbroek/ideal2/blob/main/src/Resources/Payment.php
+[paymentstatus]: https://github.com/petervdbroek/ideal2/blob/main/src/Resources/PaymentStatus.php
+[resources]: https://github.com/petervdbroek/ideal2/blob/main/src/Resources
+[endpoints]: https://github.com/petervdbroek/ideal2/blob/main/src/Endpoints
