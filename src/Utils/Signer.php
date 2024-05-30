@@ -3,6 +3,7 @@
 namespace PetervdBroek\iDEAL2\Utils;
 
 use PetervdBroek\iDEAL2\Exceptions\InvalidDigestException;
+use PetervdBroek\iDEAL2\Exceptions\InvalidSignatureException;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 
@@ -14,11 +15,13 @@ class Signer
     /**
      * @param $certificateFilePath
      * @param $privateKeyFilePath
+     * @param $publicCertificateFilePath
      */
-    public function __construct($certificateFilePath, $privateKeyFilePath)
+    public function __construct($certificateFilePath, $privateKeyFilePath, $publicCertificateFilePath)
     {
         $this->certificate = openssl_x509_read(file_get_contents($certificateFilePath));
         $this->privateKey = openssl_get_privatekey(file_get_contents($privateKeyFilePath));
+        $this->publicCertificate = openssl_x509_read(file_get_contents($publicCertificateFilePath));
     }
 
     /**
@@ -108,9 +111,21 @@ class Signer
     /**
      * @param array $headers
      * @return void
+     * @throws InvalidSignatureException
      */
     private function verifySignature(array $headers): void
     {
-        // TODO implement when public certificate is available
+        preg_match('/signature="([^"]+)"/', $headers['Signature'][0], $matches);
+        $signature = base64_decode($matches[1]);
+
+        $signString = $this->getSignString([
+            'MessageCreateDateTime' => $headers['MessageCreateDateTime'][0],
+            'X-Request-ID' => $headers['X-Request-ID'][0],
+            'Digest' => $headers['Digest'][0]
+        ]);
+
+        if (openssl_verify($signString, $signature, $this->publicCertificate, 'SHA256') !== 1) {
+            throw new InvalidSignatureException();
+        }
     }
 }

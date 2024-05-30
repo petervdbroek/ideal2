@@ -41,12 +41,12 @@ class iDEAL
         string $baseUri,
         string $certificateFilePath,
         string $privateKeyFilePath,
-    )
-    {
+        string $publicCertificateFilePath,
+    ) {
         $this->merchantId = $merchantId;
         $this->client = $client;
         $this->httpClient = new Client(['base_uri' => $baseUri]);
-        $this->signer = new Signer($certificateFilePath, $privateKeyFilePath);
+        $this->signer = new Signer($certificateFilePath, $privateKeyFilePath, $publicCertificateFilePath);
     }
 
     /**
