@@ -3,6 +3,7 @@
 namespace PetervdBroek\iDEAL2\Utils;
 
 use PetervdBroek\iDEAL2\Exceptions\InvalidDigestException;
+use PetervdBroek\iDEAL2\Exceptions\InvalidSignatureException;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 
@@ -111,6 +112,25 @@ class Signer
      */
     private function verifySignature(array $headers): void
     {
-        // TODO implement when public certificate is available
+        $publicKey = openssl_get_publickey(
+            file_get_contents(
+                storage_path(
+                    config('ideal.files.public_certificate'),
+                )
+            )
+        );
+
+        preg_match('/signature="([^"]+)"/', $headers['Signature'][0], $matches);
+        $signature = base64_decode($matches[1]);
+
+        $signString = $this->getSignString([
+            'MessageCreateDateTime' => $headers['MessageCreateDateTime'][0],
+            'X-Request-ID' => $headers['X-Request-ID'][0],
+            'Digest' => $headers['Digest'][0]
+        ]);
+
+        if (openssl_verify($signString, $signature, $publicKey, 'SHA256') !== 1) {
+            throw new InvalidSignatureException();
+        }// TODO implement when public certificate is available
     }
 }
