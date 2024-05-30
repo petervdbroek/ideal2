@@ -20,6 +20,7 @@ class Signer
     {
         $this->certificate = openssl_x509_read(file_get_contents($certificateFilePath));
         $this->privateKey = openssl_get_privatekey(file_get_contents($privateKeyFilePath));
+        $this->publicCertificate = openssl_x509_read(file_get_contents($publicCertificateFilePath));
     }
 
     /**
@@ -112,14 +113,6 @@ class Signer
      */
     private function verifySignature(array $headers): void
     {
-        $publicKey = openssl_get_publickey(
-            file_get_contents(
-                storage_path(
-                    config('ideal.files.public_certificate'),
-                )
-            )
-        );
-
         preg_match('/signature="([^"]+)"/', $headers['Signature'][0], $matches);
         $signature = base64_decode($matches[1]);
 
@@ -129,8 +122,8 @@ class Signer
             'Digest' => $headers['Digest'][0]
         ]);
 
-        if (openssl_verify($signString, $signature, $publicKey, 'SHA256') !== 1) {
+        if (openssl_verify($signString, $signature, $this->publicCertificate, 'SHA256') !== 1) {
             throw new InvalidSignatureException();
-        }// TODO implement when public certificate is available
+        }
     }
 }
