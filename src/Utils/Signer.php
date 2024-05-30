@@ -15,8 +15,9 @@ class Signer
     /**
      * @param $certificateFilePath
      * @param $privateKeyFilePath
+     * @param $publicCertificateFilePath
      */
-    public function __construct($certificateFilePath, $privateKeyFilePath)
+    public function __construct($certificateFilePath, $privateKeyFilePath, $publicCertificateFilePath)
     {
         $this->certificate = openssl_x509_read(file_get_contents($certificateFilePath));
         $this->privateKey = openssl_get_privatekey(file_get_contents($privateKeyFilePath));
@@ -110,6 +111,7 @@ class Signer
     /**
      * @param array $headers
      * @return void
+     * @throws InvalidSignatureException
      */
     private function verifySignature(array $headers): void
     {
