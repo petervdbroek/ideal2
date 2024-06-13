@@ -24,7 +24,7 @@ If you need this functionality you can add this by creating a PR on this repo. S
 
 ### Initiate library
 ```php
-$ideal = new iDEAL('<merchantId>', '<client>', '<baseUri>', '<certificatePath>', '<privateKeyPath>');
+$ideal = new iDEAL('<merchantId>', '<client>', '<baseUri>', '<certificatePath>', '<privateKeyPath>', '<publicCertificateFilePath>');
 ```
 
 ### Initiate a payment
